@@ -1,4 +1,4 @@
-const endpoint = "http://192.168.1.111:3000/nav";
+const endpoint = "http://192.168.1.175:3000/nav";
 const cachePath = "assets/cache.json";
 
 function requestFailed(resp) {
@@ -15,7 +15,7 @@ function readCache() {
 }
 
 async function fetch() {
-  let response = await $http.post(endpoint)
+  let response = await $http.get(endpoint)
   const items = response.data.data
   let rankList = (await $http.get('https://api.bilibili.com/x/web-interface/ranking/v2?rid=0&type=all')).data.data.list
   rankList = rankList.slice(0,6)
@@ -31,6 +31,9 @@ async function fetch() {
   
   const videoList = await $http.get('https://api.bilibili.com/x/space/bangumi/follow/list?type=1&follow_status=0&pn=1&ps=15&vmid=37539830&ts=1606439330302')
   $cache.set("videoList", videoList.data.data.list.slice(0,4));
+
+  const imgBase64 = await $http.get('http://192.168.1.111:3000/img')
+  $cache.set("imgBase64", imgBase64.data);
 
   // let temp = await Promise.all(videoList.data.data.list.slice(0,4).map(it => {
   //   return $http.download(it.cover)
