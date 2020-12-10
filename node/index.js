@@ -57,6 +57,8 @@ const { createCanvas, loadImage } = require('canvas')
 // const imgBase64 = canvas.toDataURL()
 // canvas.toDataURL()
 
+const SESSDATA = '36a1ea9a%2C1619659635%2C1b936*a1'
+const csrf = '4944d334a5e6be5b30096d6f726e7cdc'
 app.get('/', (req, res) => {
 })
 
@@ -80,7 +82,57 @@ app.get('/img',async (req, res) => {
         res.send('Whoops !')
         console.log(err)
     }
+})
 
+
+// 获取投币
+app.post('/addCoin',async (req, res) => {
+    let form = {
+        aid: 500528228,
+        multiply: 1,
+        select_like: 1,
+        csrf: '4944d334a5e6be5b30096d6f726e7cdc'
+    }
+    try {
+        const data = await axios.post('http://api.bilibili.com/x/web-interface/coin/add',
+            transformData(form),
+            {headers: {'cookie': 'SESSDATA=36a1ea9a%2C1619659635%2C1b936*a1'}
+        })
+        res.send(data.data)
+    } catch(err) {
+        res.send('Whoops !')
+        console.log(err)
+    }
+})
+
+
+// 获取特别关注
+app.get('/getSpecial',async (req, res) => {
+    try {
+        const data = await axios.get('http://api.bilibili.com/x/relation/tag/special',
+            {headers: {'cookie': 'SESSDATA=36a1ea9a%2C1619659635%2C1b936*a1'}
+        })
+        res.send(data.data)
+    } catch(err) {
+        res.send('Whoops !')
+        console.log(err)
+    }
+})
+
+
+// 获取投稿视频
+app.get('/getSearch',async (req, res) => {
+    try {
+        const data = await axios.get('http://api.bilibili.com/x/space/arc/search',{params:{
+            mid: '157761',
+            ps: 2,
+            pn: 1
+        }})
+        res.send(data.data)
+    } catch(err) {
+        res.send('Whoops !')
+        console.log(err)
+    }
 })
 
 app.listen(3000,()=>{
